@@ -1,0 +1,17 @@
+# Clinic System Root Configuration
+Options -Indexes -MultiViews
+RewriteEngine on
+
+# 1. Redirect .php to no-extension AND hide /public/ (External Redirect)
+RewriteCond %{THE_REQUEST} \s/+(.*?/)?(?:public/)?([^/]+)\.php[\s?] [NC]
+RewriteRule ^ %2 [R=301,L,NE]
+
+# 2. Redirect /public/ to clean URL (External)
+RewriteCond %{REQUEST_URI} /public/
+RewriteRule ^(?:public/)?(.*)$ $1 [R=301,L,NC]
+
+# 3. Route all remaining requests to the public folder internally
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1 [L]
