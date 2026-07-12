@@ -1,0 +1,30 @@
+# OCNHS Clean URLs Configuration
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. Force No-Cache
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </IfModule>
+
+    # 2. Handle Special Routes
+    RewriteRule ^login/?$ index.php [L]
+    RewriteRule ^logout/?$ signout.php [L]
+
+    # 3. Internal Rewrite to .php
+    #    Check if file exists with .php extension
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/]+)$ $1.php [L]
+</IfModule>
+
+# Security - Block sensitive files
+<FilesMatch "\.(py|log|bak|sql|db)$">
+    Require all denied
+</FilesMatch>
